@@ -53,8 +53,8 @@ export class SdkPackagesControllerService {
      * @throws ApiError
      */
     public static createNewPackage(
-        requestBody: SdkPackagesCreationAttributes,
-    ): CancelablePromise<packagesAttributes> {
+        requestBody: Array<SdkPackagesCreationAttributes>,
+    ): CancelablePromise<Array<packagesAttributes>> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/sdk/v2/packages/create',
@@ -63,19 +63,20 @@ export class SdkPackagesControllerService {
         });
     }
     /**
-     * @param id
+     * @param requestBody
      * @returns any Ok
      * @throws ApiError
      */
     public static sendDataToCEnter(
-        id: PackageId,
+        requestBody: {
+            packageIds: Array<PackageId>;
+        },
     ): CancelablePromise<HttpSuccess> {
         return __request(OpenAPI, {
-            method: 'GET',
-            url: '/sdk/v2/packages/sentDataToCenter/{id}',
-            path: {
-                'id': id,
-            },
+            method: 'POST',
+            url: '/sdk/v2/packages/sentDataToCenter',
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
     /**

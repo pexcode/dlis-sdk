@@ -91,7 +91,7 @@ export class DLISystem {
     throw error;
   }
 
-  async CreatePackage(payload: SdkPackagesCreationAttributes): Promise<packagesAttributes> {
+  async CreatePackage(payload: SdkPackagesCreationAttributes[]): Promise<packagesAttributes[]> {
     const { result, error } = await ApiCall(() => SdkPackagesControllerService.createNewPackage(payload))
     if (result) {
       return result;
@@ -107,8 +107,8 @@ export class DLISystem {
     throw error;
   }
 
-  async SendDataToCenter(id: string): Promise<HttpSuccess> {
-    const { result, error } = await ApiCall(() => SdkPackagesControllerService.sendDataToCEnter(id))
+  async SendDataToCenter(id: string[]): Promise<HttpSuccess> {
+    const { result, error } = await ApiCall(() => SdkPackagesControllerService.sendDataToCEnter({packageIds: id}))
     if (result) {
       return result;
     }
