@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "module": "CommonJS",
+    "target": "ES2018",
+    "esModuleInterop": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "lib": ["ES2018", "DOM"]
+  },
+  "include": ["src"]
+}
