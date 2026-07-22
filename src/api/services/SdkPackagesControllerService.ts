@@ -14,7 +14,7 @@ import { request as __request } from '../core/request';
 export class SdkPackagesControllerService {
     /**
      * @param id
-     * @returns any Ok
+     * @returns packagesAttributes Ok
      * @throws ApiError
      */
     public static getPackageDetails(
@@ -31,7 +31,7 @@ export class SdkPackagesControllerService {
     /**
      * @param page
      * @param pageSize
-     * @returns any Ok
+     * @returns packagesAttributes Ok
      * @throws ApiError
      */
     public static getList(
@@ -49,7 +49,7 @@ export class SdkPackagesControllerService {
     }
     /**
      * @param requestBody
-     * @returns any Ok
+     * @returns packagesAttributes Ok
      * @throws ApiError
      */
     public static createNewPackage(
@@ -64,7 +64,7 @@ export class SdkPackagesControllerService {
     }
     /**
      * @param requestBody
-     * @returns any Ok
+     * @returns HttpSuccess Ok
      * @throws ApiError
      */
     public static sendDataToCEnter(
@@ -81,7 +81,7 @@ export class SdkPackagesControllerService {
     }
     /**
      * @param id
-     * @returns any Ok
+     * @returns HttpSuccess Ok
      * @throws ApiError
      */
     public static canceled(
@@ -98,7 +98,7 @@ export class SdkPackagesControllerService {
     /**
      * @param id
      * @param requestBody
-     * @returns any Ok
+     * @returns HttpSuccess Ok
      * @throws ApiError
      */
     public static reportPackage(
@@ -119,7 +119,7 @@ export class SdkPackagesControllerService {
     }
     /**
      * @param requestBody
-     * @returns any Ok
+     * @returns ClientAttributes Ok
      * @throws ApiError
      */
     public static checkBlackList(
