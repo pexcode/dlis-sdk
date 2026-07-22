@@ -16,6 +16,7 @@ import { SdkControllerService } from "./api/services/SdkControllerService";
 
 import { SdkPackagesControllerService } from "./api/services/SdkPackagesControllerService";
 import { SdkRegionsControllerService } from "./api/services/SdkRegionsControllerService";
+import { tenantsAttributes } from "./api/models/tenantsAttributes";
 
 const SDK_api_ver = "v3";
 
@@ -44,6 +45,14 @@ export class DLISystem {
 
   async MyInfo(): Promise<SdkInfoAttributes> {
     const { result, error } = await ApiCall<SdkInfoAttributes>(() => SdkControllerService.getMyInfo())
+    if (result) {
+      return result;
+    }
+    throw error;
+  }
+  
+  async GetMyTenantInfo(): Promise<tenantsAttributes> {
+    const { result, error } = await ApiCall<tenantsAttributes>(() => SdkControllerService.getMyTenant())
     if (result) {
       return result;
     }

@@ -9,12 +9,13 @@ import type { HttpSuccess } from '../models/HttpSuccess';
 import type { SdkInfoAttributes } from '../models/SdkInfoAttributes';
 import type { SdkLedgerOverview } from '../models/SdkLedgerOverview';
 import type { ShippingServiceData } from '../models/ShippingServiceData';
+import type { tenantsAttributes } from '../models/tenantsAttributes';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class SdkControllerService {
     /**
-     * @returns any Ok
+     * @returns branchesAttributes Ok
      * @throws ApiError
      */
     public static getTenantBranches(): CancelablePromise<Array<branchesAttributes>> {
@@ -24,7 +25,7 @@ export class SdkControllerService {
         });
     }
     /**
-     * @returns any Ok
+     * @returns SdkInfoAttributes Ok
      * @throws ApiError
      */
     public static getMyInfo(): CancelablePromise<SdkInfoAttributes> {
@@ -34,8 +35,18 @@ export class SdkControllerService {
         });
     }
     /**
+     * @returns tenantsAttributes Ok
+     * @throws ApiError
+     */
+    public static getMyTenant(): CancelablePromise<tenantsAttributes> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/sdk/v2/me-tenant',
+        });
+    }
+    /**
      * @param cityId
-     * @returns any Ok
+     * @returns branchesAttributes Ok
      * @throws ApiError
      */
     public static getListOfCity(
@@ -51,7 +62,7 @@ export class SdkControllerService {
     }
     /**
      * @param requestBody
-     * @returns any Ok
+     * @returns ShippingServiceData Ok
      * @throws ApiError
      */
     public static calculateCost(
@@ -67,7 +78,7 @@ export class SdkControllerService {
     /**
      * @param year
      * @param month
-     * @returns any Ok
+     * @returns BranchLedgerAttributes Ok
      * @throws ApiError
      */
     public static getLedgerList(
@@ -84,7 +95,7 @@ export class SdkControllerService {
         });
     }
     /**
-     * @returns any Ok
+     * @returns SdkLedgerOverview Ok
      * @throws ApiError
      */
     public static getLedgerOverView(): CancelablePromise<SdkLedgerOverview> {
@@ -95,7 +106,7 @@ export class SdkControllerService {
     }
     /**
      * @param requestBody
-     * @returns any Ok
+     * @returns HttpSuccess Ok
      * @throws ApiError
      */
     public static setWebhook(

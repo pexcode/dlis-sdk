@@ -15,6 +15,7 @@ import type { PackageType } from './PackageType';
 import type { ProofOfDeliveryType } from './ProofOfDeliveryType';
 import type { SdkId } from './SdkId';
 import type { ShippingOption } from './ShippingOption';
+import type { ShippingZone } from './ShippingZone';
 import type { Sizes } from './Sizes';
 import type { TenantId } from './TenantId';
 import type { UserId } from './UserId';
@@ -50,7 +51,14 @@ export type packagesAttributes = {
     updatedAt?: string;
     uuid: string;
     roadGroupId?: string;
-    size: Sizes;
+    /**
+     * V1: sm/md/lg. V2: dimensions string e.g. "50×50×50".
+     */
+    size: (Sizes | string);
+    /**
+     * Copied from cost model V2 when created.
+     */
+    shippingZone?: ShippingZone;
     wa: boolean;
     kg: number;
     roadAt?: string;
