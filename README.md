@@ -61,7 +61,7 @@ Common steps to create a new package:
 3. Fetch company branches in the city
 4. Calculate shipping cost
 5. Check blacklist (optional)
-6. Create the package
+6. Create the package(s)
 7. Send package data to the center
 ```
 
@@ -94,28 +94,30 @@ await dlis.CheckBlackList({
   lastName: "Doe",
 });
 
-const pkg = await dlis.CreatePackage({
-  weight: 2,
-  shippingOption: "standard",
-  billingType: "prepaid",
-  proofOfDeliveryType: "signature",
-  branchId: branch.id,
-  costId: branch.costModel![0].id,
-  type: "Package",
-  note: "Store order",
-  pickup: false,
-  includeProducts: false,
-  isTesting: false,
-  receiverInfo: {
-    firstName: "John",
-    lastName: "Doe",
-    address: "10 Example Street",
-    phone: "+966500000000",
-    cityId,
+const packages = await dlis.CreatePackage([
+  {
+    weight: 2,
+    shippingOption: "standard",
+    billingType: "prepaid",
+    proofOfDeliveryType: "signature",
+    branchId: branch.id,
+    costId: branch.costModel![0].id,
+    type: "Package",
+    note: "Store order",
+    pickup: false,
+    includeProducts: false,
+    isTesting: false,
+    receiverInfo: {
+      firstName: "John",
+      lastName: "Doe",
+      address: "10 Example Street",
+      phone: "+966500000000",
+      cityId,
+    },
   },
-});
+]);
 
-await dlis.SendDataToCenter(pkg.id);
+await dlis.SendDataToCenter(packages.map((pkg) => pkg.id));
 ```
 
 ---
@@ -127,11 +129,13 @@ await dlis.SendDataToCenter(pkg.id);
 | Method | Description |
 |--------|-------------|
 | `MyInfo()` | Returns connected SDK app info (status, limits, webhook, etc.) |
+| `GetMyTenantInfo()` | Returns the connected tenant details |
 | `getTenantBranches()` | Fetches all tenant branches |
 | `getCompanyListOfCity(cityId)` | Fetches company branches available in a given city |
 
 ```typescript
 const info = await dlis.MyInfo();
+const tenant = await dlis.GetMyTenantInfo();
 const branches = await dlis.getTenantBranches();
 const cityBranches = await dlis.getCompanyListOfCity(42);
 ```
@@ -158,18 +162,18 @@ const cities = await dlis.GetCitiesListInByRegion(regions[0].id);
 |--------|-------------|
 | `GetList(page?, pageSize?)` | Fetches paginated package list (default: page 1, 10 items) |
 | `GetPackageDetails(id)` | Fetches a single package by ID |
-| `CreatePackage(payload)` | Creates a new package |
+| `CreatePackage(payload)` | Creates one or more packages (accepts an array) |
 | `CancelOne(id)` | Cancels a package |
-| `ReportOne(id, body)` | Reports an issue with a package |
-| `SendDataToCenter(id)` | Sends package data to the center after preparation |
+| `ReportOne(id, body)` | Reports an issue with a package (`{ reportId: number }`) |
+| `SendDataToCenter(ids)` | Sends package data to the center after preparation (accepts an array of IDs) |
 
 ```typescript
 const packages = await dlis.GetList(1, 20);
 const details = await dlis.GetPackageDetails("package-id");
-const created = await dlis.CreatePackage({ /* ... */ });
+const created = await dlis.CreatePackage([/* ... */]);
 await dlis.CancelOne("package-id");
-await dlis.ReportOne("package-id", { reason: "Delivery delayed" });
-await dlis.SendDataToCenter("package-id");
+await dlis.ReportOne("package-id", { reportId: 1 });
+await dlis.SendDataToCenter(["package-id"]);
 ```
 
 ---
@@ -238,6 +242,8 @@ await dlis.SetWebhook({
 
 ### Create Package — `SdkPackagesCreationAttributes`
 
+`CreatePackage` accepts an **array** of these objects.
+
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `weight` | `number` | Yes | Package weight in kilograms |
@@ -258,6 +264,8 @@ await dlis.SetWebhook({
 
 ### Receiver Info — `ClientCreationAttributes`
 
+Used when creating a package (`receiverInfo`).
+
 | Field | Type | Required |
 |-------|------|----------|
 | `firstName` | `string` | Yes |
@@ -269,6 +277,23 @@ await dlis.SetWebhook({
 | `email` | `string` | No |
 | `lng` / `lat` | `number` | No |
 | `houseNumber` | `string` | No |
+
+### Address Info — `ClientAddressAttributes`
+
+Returned on package details as `senderAddressInfo` and `receiverAddressInfo`.
+
+| Field | Type | Required |
+|-------|------|----------|
+| `id` | `string` | Yes |
+| `clientId` | `string` | Yes |
+| `countryId` | `number` | Yes |
+| `cityId` | `number` | Yes |
+| `address` | `string` | Yes |
+| `isDefault` | `boolean` | Yes |
+| `houseNumber` | `string \| null` | No |
+| `postCode` | `string \| null` | No |
+| `lat` / `lng` | `number \| null` | No |
+| `createdAt` / `updatedAt` | `string` | No |
 
 ---
 
@@ -313,7 +338,7 @@ When a request fails, the SDK throws an `Error` with the server message. Handle 
 
 ```typescript
 try {
-  const pkg = await dlis.CreatePackage(payload);
+  const packages = await dlis.CreatePackage([payload]);
 } catch (error) {
   console.error("Failed to create package:", (error as Error).message);
 }
