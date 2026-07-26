@@ -4,6 +4,7 @@
 /* eslint-disable */
 import type { BillingType } from './BillingType';
 import type { BranchId } from './BranchId';
+import type { ClientAddressAttributes } from './ClientAddressAttributes';
 import type { ClientAttributes } from './ClientAttributes';
 import type { CostId } from './CostId';
 import type { Currencies } from './Currencies';
@@ -23,12 +24,14 @@ export type packagesAttributes = {
     url?: string;
     id: PackageId;
     adminId?: UserId;
-    deliveryId?: UserId;
+    deliveryId?: UserId | null;
     tenantId?: TenantId;
     futureTenantId?: TenantId;
     appId?: SdkId;
     limitedAppId?: string;
     receiverCityId?: number;
+    senderAddressId?: string | null;
+    receiverAddressId?: string | null;
     code?: string;
     branchId?: BranchId;
     receiverId: string;
@@ -79,5 +82,7 @@ export type packagesAttributes = {
     movementPackageGroup?: Array<movementsAttributes>;
     receiverInfo?: ClientAttributes;
     senderInfo?: ClientAttributes;
+    senderAddressInfo?: ClientAddressAttributes;
+    receiverAddressInfo?: ClientAddressAttributes;
 };
 
