@@ -7,7 +7,6 @@ import type { BranchId } from './BranchId';
 import type { ClientAddressAttributes } from './ClientAddressAttributes';
 import type { ClientAttributes } from './ClientAttributes';
 import type { CostId } from './CostId';
-import type { Currencies } from './Currencies';
 import type { EndpointId } from './EndpointId';
 import type { movementsAttributes } from './movementsAttributes';
 import type { PackageId } from './PackageId';
@@ -28,7 +27,7 @@ export type packagesAttributes = {
     tenantId?: TenantId;
     futureTenantId?: TenantId;
     appId?: SdkId;
-    limitedAppId?: string;
+    limitedSdkId?: string;
     receiverCityId?: number;
     senderAddressId?: string | null;
     receiverAddressId?: string | null;
@@ -41,10 +40,6 @@ export type packagesAttributes = {
     shippingCost: number;
     packageCost?: number;
     costId?: CostId;
-    paymentMethod?: string;
-    paymentId?: string;
-    paymentDate?: string;
-    currency: Currencies;
     showCostBox: boolean;
     km?: number;
     travelTimeInSeconds?: number;
@@ -62,11 +57,9 @@ export type packagesAttributes = {
      * Copied from cost model V2 when created.
      */
     shippingZone?: ShippingZone;
-    wa: boolean;
     kg: number;
     roadAt?: string;
-    isPaidOnline: boolean;
-    endpoint?: EndpointId;
+    endpointId?: EndpointId;
     pickup: boolean;
     includeProducts: boolean;
     platform: PackagePlatform;

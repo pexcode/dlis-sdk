@@ -22,7 +22,7 @@ export type SdkPackagesCreationAttributes = {
     type: PackageType;
     note: string;
     packageCost?: number;
-    endpoint?: EndpointId;
+    endpointId?: EndpointId;
     pickup: boolean;
     includeProducts: boolean;
     isTesting: boolean;

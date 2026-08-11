@@ -2,9 +2,6 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export enum PackagePlatform {
-    DLIS = 'dlis',
-    SDK = 'sdk',
-    ANDROID = 'android',
-    ENDPOINT = 'endpoint',
+export enum PaymentMethod {
+    CASH = 'Cash',
 }

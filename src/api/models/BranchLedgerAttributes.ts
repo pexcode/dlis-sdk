@@ -7,6 +7,7 @@ import type { Currencies } from './Currencies';
 import type { LedgerCategory } from './LedgerCategory';
 import type { LedgerStatus } from './LedgerStatus';
 import type { LedgerType } from './LedgerType';
+import type { PaymentMethod } from './PaymentMethod';
 import type { ReferenceType } from './ReferenceType';
 import type { UserId } from './UserId';
 export type BranchLedgerAttributes = {
@@ -14,13 +15,17 @@ export type BranchLedgerAttributes = {
     branchId: BranchId;
     userId?: UserId;
     appId?: string;
-    limitedAppId?: string;
+    limitedSdkId?: string;
     referenceType: ReferenceType;
     packageId?: string;
     type: LedgerType;
     category: LedgerCategory;
     amount: number;
     currency: Currencies;
+    paymentMethod?: PaymentMethod;
+    paymentId?: string;
+    paymentDate?: string;
+    isPaidOnline?: boolean;
     status: LedgerStatus;
     createdAt?: string;
     updatedAt?: string;

@@ -12,6 +12,7 @@ export type ClientCreationAttributes = {
     lng?: number;
     lat?: number;
     cityId: number;
+    neighborhoodId?: number;
     houseNumber?: string;
 };
 

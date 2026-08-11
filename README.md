@@ -113,6 +113,7 @@ const packages = await dlis.CreatePackage([
       address: "10 Example Street",
       phone: "+966500000000",
       cityId,
+      neighborhoodId: 5,
     },
   },
 ]);
@@ -218,6 +219,7 @@ const overview = await dlis.GetMyLedgerOverview();
 // overview.currentBalance, overview.unpaidIncome, overview.unpaidExpenses, overview.expectedBalance
 
 const ledger = await dlis.GetMyLedger(2026, 7);
+// ledger entries include paymentMethod, paymentId, paymentDate, isPaidOnline, limitedSdkId
 ```
 
 ---
@@ -260,7 +262,7 @@ await dlis.SetWebhook({
 | `receiverInfo` | `ClientCreationAttributes` | Yes | Receiver details |
 | `futureTenantId` | `string` | No | Future tenant ID |
 | `packageCost` | `number` | No | Package contents value |
-| `endpoint` | `string` | No | Specific delivery endpoint |
+| `endpointId` | `string` | No | Specific delivery endpoint ID |
 
 ### Receiver Info — `ClientCreationAttributes`
 
@@ -273,6 +275,7 @@ Used when creating a package (`receiverInfo`).
 | `address` | `string` | Yes |
 | `phone` | `string` | Yes |
 | `cityId` | `number` | Yes |
+| `neighborhoodId` | `number` | No |
 | `postCode` | `string` | No |
 | `email` | `string` | No |
 | `lng` / `lat` | `number` | No |
@@ -280,7 +283,7 @@ Used when creating a package (`receiverInfo`).
 
 ### Address Info — `ClientAddressAttributes`
 
-Returned on package details as `senderAddressInfo` and `receiverAddressInfo`.
+Returned on package details as `senderAddressInfo` and `receiverAddressInfo`, and on client details as `defaultAddress` / `addresses`.
 
 | Field | Type | Required |
 |-------|------|----------|
@@ -290,9 +293,34 @@ Returned on package details as `senderAddressInfo` and `receiverAddressInfo`.
 | `cityId` | `number` | Yes |
 | `address` | `string` | Yes |
 | `isDefault` | `boolean` | Yes |
+| `neighborhoodId` | `number \| null` | No |
 | `houseNumber` | `string \| null` | No |
 | `postCode` | `string \| null` | No |
 | `lat` / `lng` | `number \| null` | No |
+| `createdAt` / `updatedAt` | `string` | No |
+
+### Ledger Entry — `BranchLedgerAttributes`
+
+Returned by `GetMyLedger()`.
+
+| Field | Type | Required |
+|-------|------|----------|
+| `id` | `string` | Yes |
+| `branchId` | `string` | Yes |
+| `referenceType` | `ReferenceType` | Yes |
+| `type` | `LedgerType` | Yes |
+| `category` | `LedgerCategory` | Yes |
+| `amount` | `number` | Yes |
+| `currency` | `Currencies` | Yes |
+| `status` | `LedgerStatus` | Yes |
+| `userId` | `string` | No |
+| `appId` | `string` | No |
+| `limitedSdkId` | `string` | No |
+| `packageId` | `string` | No |
+| `paymentMethod` | `PaymentMethod` | No |
+| `paymentId` | `string` | No |
+| `paymentDate` | `string` | No |
+| `isPaidOnline` | `boolean` | No |
 | `createdAt` / `updatedAt` | `string` | No |
 
 ---
@@ -329,6 +357,21 @@ Returned on package details as `senderAddressInfo` and `receiverAddressInfo`.
 |-------|-------------|
 | `Package` | Package |
 | `Document` | Document |
+
+### `PackagePlatform`
+
+| Value | Description |
+|-------|-------------|
+| `dlis` | DLIS platform |
+| `sdk` | SDK |
+| `android` | Android app |
+| `endpoint` | Endpoint |
+
+### `PaymentMethod`
+
+| Value | Description |
+|-------|-------------|
+| `Cash` | Cash payment |
 
 ---
 

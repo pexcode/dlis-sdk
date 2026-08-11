@@ -7,6 +7,7 @@ export type ClientAddressAttributes = {
     clientId: string;
     countryId: number;
     cityId: number;
+    neighborhoodId?: number | null;
     address: string;
     houseNumber?: string | null;
     postCode?: string | null;

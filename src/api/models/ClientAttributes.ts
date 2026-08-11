@@ -24,5 +24,6 @@ export type ClientAttributes = {
     createdAt?: string;
     updatedAt?: string;
     defaultAddress?: ClientAddressAttributes;
+    addresses?: Array<ClientAddressAttributes>;
 };
 
