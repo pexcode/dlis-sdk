@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { BillingType } from './BillingType';
-import type { BranchId } from './BranchId';
 import type { ClientCreationAttributes } from './ClientCreationAttributes';
 import type { CostId } from './CostId';
 import type { EndpointId } from './EndpointId';
@@ -16,7 +15,6 @@ export type SdkPackagesCreationAttributes = {
     shippingOption: ShippingOption;
     billingType: BillingType;
     proofOfDeliveryType: ProofOfDeliveryType;
-    branchId: BranchId;
     costId: CostId;
     futureTenantId?: TenantId;
     type: PackageType;

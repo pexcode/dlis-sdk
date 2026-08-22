@@ -45,19 +45,13 @@ export class SdkControllerService {
         });
     }
     /**
-     * @param cityId
      * @returns branchesAttributes Ok
      * @throws ApiError
      */
-    public static getListOfCity(
-        cityId: number,
-    ): CancelablePromise<Array<branchesAttributes>> {
+    public static getListOfCity(): CancelablePromise<Array<branchesAttributes>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/sdk/v2/place/{city}',
-            query: {
-                'cityId': cityId,
-            },
+            url: '/sdk/v2/place',
         });
     }
     /**
