@@ -6,6 +6,7 @@ import type { BranchId } from './BranchId';
 import type { CostId } from './CostId';
 import type { Currencies } from './Currencies';
 import type { PackageType } from './PackageType';
+import type { SdkId } from './SdkId';
 import type { ShippingZone } from './ShippingZone';
 import type { Sizes } from './Sizes';
 import type { TenantId } from './TenantId';
@@ -13,6 +14,7 @@ export type costModelAttributes = {
     id: CostId;
     tenantId: TenantId;
     branchId: BranchId;
+    sdkId: SdkId | null;
     type: PackageType;
     typeId: number;
     /**

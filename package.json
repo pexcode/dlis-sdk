@@ -1,6 +1,6 @@
 {
   "name": "@pexcode/dlis-sdk",
-  "version": "1.3.2",
+  "version": "1.4.2",
   "description": "This is a library published under Pexcode to help users and developers to use dlis API",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

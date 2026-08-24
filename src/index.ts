@@ -35,8 +35,8 @@ export class DLISystem {
     throw error;
   }
 
-  async getCompanyListOfCity(cityId: number): Promise<branchesAttributes[]> {
-    const { result, error } = await ApiCall(() => SdkControllerService.getListOfCity(cityId))
+  async getCompanyListOfCity(): Promise<branchesAttributes[]> {
+    const { result, error } = await ApiCall(() => SdkControllerService.getListOfCity())
     if (result) {
       return result;
     }
