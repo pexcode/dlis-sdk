@@ -5,24 +5,24 @@
 import type { CheckBlackListAttribute } from '../models/CheckBlackListAttribute';
 import type { ClientAttributes } from '../models/ClientAttributes';
 import type { HttpSuccess } from '../models/HttpSuccess';
-import type { PackageId } from '../models/PackageId';
-import type { packagesAttributes } from '../models/packagesAttributes';
-import type { SdkPackagesCreationAttributes } from '../models/SdkPackagesCreationAttributes';
+import type { SdkShipmentsCreationAttributes } from '../models/SdkShipmentsCreationAttributes';
+import type { ShipmentId } from '../models/ShipmentId';
+import type { shipmentsAttributes } from '../models/shipmentsAttributes';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class SdkPackagesControllerService {
+export class SdkShipmentsControllerService {
     /**
      * @param id
-     * @returns packagesAttributes Ok
+     * @returns shipmentsAttributes Ok
      * @throws ApiError
      */
-    public static getPackageDetails(
-        id: PackageId,
-    ): CancelablePromise<packagesAttributes> {
+    public static getShipmentDetails(
+        id: ShipmentId,
+    ): CancelablePromise<shipmentsAttributes> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/sdk/v2/packages/package-details/{id}',
+            url: '/sdk/v2/shipments/shipment-details/{id}',
             path: {
                 'id': id,
             },
@@ -31,16 +31,16 @@ export class SdkPackagesControllerService {
     /**
      * @param page
      * @param pageSize
-     * @returns packagesAttributes Ok
+     * @returns shipmentsAttributes Ok
      * @throws ApiError
      */
     public static getList(
         page: number = 1,
         pageSize: number = 10,
-    ): CancelablePromise<Array<packagesAttributes>> {
+    ): CancelablePromise<Array<shipmentsAttributes>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/sdk/v2/packages/list',
+            url: '/sdk/v2/shipments/list',
             query: {
                 'page': page,
                 'page_size': pageSize,
@@ -49,15 +49,15 @@ export class SdkPackagesControllerService {
     }
     /**
      * @param requestBody
-     * @returns packagesAttributes Ok
+     * @returns shipmentsAttributes Ok
      * @throws ApiError
      */
-    public static createNewPackage(
-        requestBody: Array<SdkPackagesCreationAttributes>,
-    ): CancelablePromise<Array<packagesAttributes>> {
+    public static createNewShipment(
+        requestBody: Array<SdkShipmentsCreationAttributes>,
+    ): CancelablePromise<Array<shipmentsAttributes>> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/sdk/v2/packages/create',
+            url: '/sdk/v2/shipments/create',
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -69,12 +69,12 @@ export class SdkPackagesControllerService {
      */
     public static sendDataToCEnter(
         requestBody: {
-            packageIds: Array<PackageId>;
+            shipmentIds?: Array<ShipmentId>;
         },
     ): CancelablePromise<HttpSuccess> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/sdk/v2/packages/sentDataToCenter',
+            url: '/sdk/v2/shipments/sentDataToCenter',
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -85,11 +85,11 @@ export class SdkPackagesControllerService {
      * @throws ApiError
      */
     public static canceled(
-        id: PackageId,
+        id: ShipmentId,
     ): CancelablePromise<HttpSuccess> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/sdk/v2/packages/cancel/{id}',
+            url: '/sdk/v2/shipments/cancel/{id}',
             path: {
                 'id': id,
             },
@@ -101,15 +101,15 @@ export class SdkPackagesControllerService {
      * @returns HttpSuccess Ok
      * @throws ApiError
      */
-    public static reportPackage(
-        id: PackageId,
+    public static reportShipment(
+        id: ShipmentId,
         requestBody: {
             reportId: number;
         },
     ): CancelablePromise<HttpSuccess> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/sdk/v2/packages/report/{id}',
+            url: '/sdk/v2/shipments/report/{id}',
             path: {
                 'id': id,
             },
@@ -127,7 +127,7 @@ export class SdkPackagesControllerService {
     ): CancelablePromise<ClientAttributes> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/sdk/v2/packages/check-black-list',
+            url: '/sdk/v2/shipments/check-black-list',
             body: requestBody,
             mediaType: 'application/json',
         });

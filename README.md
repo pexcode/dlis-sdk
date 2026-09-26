@@ -2,7 +2,7 @@
 
 Official TypeScript/JavaScript SDK from [Pexcode](https://pexcode.com) for integrating with the **DLIS API** (delivery and logistics management platform).
 
-The SDK supports package creation, cost calculation, branch and region management, ledger tracking, and webhook configuration.
+The SDK supports shipment creation, cost calculation, branch and region management, ledger tracking, and webhook configuration.
 
 ---
 
@@ -53,7 +53,7 @@ const dlis = new QDSystem("https://your-api-base-url.com", "your-api-token");
 
 ## Typical Workflow
 
-Common steps to create a new package:
+Common steps to create a new shipment:
 
 ```
 1. Fetch regions
@@ -61,8 +61,8 @@ Common steps to create a new package:
 3. Fetch company branches in the city
 4. Calculate shipping cost
 5. Check blacklist (optional)
-6. Create the package(s)
-7. Send package data to the center
+6. Create the shipment(s)
+7. Send shipment data to the center
 ```
 
 ```typescript
@@ -94,7 +94,7 @@ await dlis.CheckBlackList({
   lastName: "Doe",
 });
 
-const packages = await dlis.CreatePackage([
+const shipments = await dlis.CreatePackage([
   {
     weight: 2,
     shippingOption: "standard",
@@ -118,7 +118,7 @@ const packages = await dlis.CreatePackage([
   },
 ]);
 
-await dlis.SendDataToCenter(packages.map((pkg) => pkg.id));
+await dlis.SendDataToCenter(shipments.map((pkg) => pkg.id));
 ```
 
 ---
@@ -161,20 +161,20 @@ const cities = await dlis.GetCitiesListInByRegion(regions[0].id);
 
 | Method | Description |
 |--------|-------------|
-| `GetList(page?, pageSize?)` | Fetches paginated package list (default: page 1, 10 items) |
-| `GetPackageDetails(id)` | Fetches a single package by ID |
-| `CreatePackage(payload)` | Creates one or more packages (accepts an array) |
-| `CancelOne(id)` | Cancels a package |
-| `ReportOne(id, body)` | Reports an issue with a package (`{ reportId: number }`) |
-| `SendDataToCenter(ids)` | Sends package data to the center after preparation (accepts an array of IDs) |
+| `GetList(page?, pageSize?)` | Fetches paginated shipment list (default: page 1, 10 items) |
+| `GetPackageDetails(id)` | Fetches a single shipment by ID |
+| `CreatePackage(payload)` | Creates one or more shipments (accepts an array) |
+| `CancelOne(id)` | Cancels a shipment |
+| `ReportOne(id, body)` | Reports an issue with a shipment (`{ reportId: number }`) |
+| `SendDataToCenter(ids)` | Sends shipment data to the center after preparation (accepts an array of IDs) |
 
 ```typescript
-const packages = await dlis.GetList(1, 20);
-const details = await dlis.GetPackageDetails("package-id");
+const shipments = await dlis.GetList(1, 20);
+const details = await dlis.GetPackageDetails("shipment-id");
 const created = await dlis.CreatePackage([/* ... */]);
-await dlis.CancelOne("package-id");
-await dlis.ReportOne("package-id", { reportId: 1 });
-await dlis.SendDataToCenter(["package-id"]);
+await dlis.CancelOne("shipment-id");
+await dlis.ReportOne("shipment-id", { reportId: 1 });
+await dlis.SendDataToCenter(["shipment-id"]);
 ```
 
 ---
@@ -183,7 +183,7 @@ await dlis.SendDataToCenter(["package-id"]);
 
 | Method | Description |
 |--------|-------------|
-| `CalculateCost(params)` | Calculates shipping cost before creating a package |
+| `CalculateCost(params)` | Calculates shipping cost before creating a shipment |
 | `CheckBlackList(query)` | Checks receiver details against the blacklist |
 
 ```typescript
@@ -242,31 +242,31 @@ await dlis.SetWebhook({
 
 ## Main Data Types
 
-### Create Package — `SdkPackagesCreationAttributes`
+### Create shipment — `SdkPackagesCreationAttributes`
 
 `CreatePackage` accepts an **array** of these objects.
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `weight` | `number` | Yes | Package weight in kilograms |
+| `weight` | `number` | Yes | shipment weight in kilograms |
 | `shippingOption` | `ShippingOption` | Yes | Shipping type |
 | `billingType` | `BillingType` | Yes | Billing type |
 | `proofOfDeliveryType` | `ProofOfDeliveryType` | Yes | Proof of delivery |
 | `branchId` | `string` | Yes | Branch ID |
 | `costId` | `string` | Yes | Cost model ID |
-| `type` | `PackageType` | Yes | Package type |
+| `type` | `PackageType` | Yes | shipment type |
 | `note` | `string` | Yes | Notes |
 | `pickup` | `boolean` | Yes | Pickup from branch? |
 | `includeProducts` | `boolean` | Yes | Includes products? |
-| `isTesting` | `boolean` | Yes | Test package |
+| `isTesting` | `boolean` | Yes | Test shipment |
 | `receiverInfo` | `ClientCreationAttributes` | Yes | Receiver details |
 | `futureTenantId` | `string` | No | Future tenant ID |
-| `packageCost` | `number` | No | Package contents value |
+| `codAmount` | `number` | No | shipment contents value |
 | `endpointId` | `string` | No | Specific delivery endpoint ID |
 
 ### Receiver Info — `ClientCreationAttributes`
 
-Used when creating a package (`receiverInfo`).
+Used when creating a shipment (`receiverInfo`).
 
 | Field | Type | Required |
 |-------|------|----------|
@@ -283,7 +283,7 @@ Used when creating a package (`receiverInfo`).
 
 ### Address Info — `ClientAddressAttributes`
 
-Returned on package details as `senderAddressInfo` and `receiverAddressInfo`, and on client details as `defaultAddress` / `addresses`.
+Returned on shipment details as `senderAddressInfo` and `receiverAddressInfo`, and on client details as `defaultAddress` / `addresses`.
 
 | Field | Type | Required |
 |-------|------|----------|
@@ -316,7 +316,7 @@ Returned by `GetMyLedger()`.
 | `userId` | `string` | No |
 | `appId` | `string` | No |
 | `limitedSdkId` | `string` | No |
-| `packageId` | `string` | No |
+| `shipmentId` | `string` | No |
 | `paymentMethod` | `PaymentMethod` | No |
 | `paymentId` | `string` | No |
 | `paymentDate` | `string` | No |
@@ -381,9 +381,9 @@ When a request fails, the SDK throws an `Error` with the server message. Handle 
 
 ```typescript
 try {
-  const packages = await dlis.CreatePackage([payload]);
+  const shipments = await dlis.CreatePackage([payload]);
 } catch (error) {
-  console.error("Failed to create package:", (error as Error).message);
+  console.error("Failed to create shipment:", (error as Error).message);
 }
 ```
 
@@ -391,7 +391,7 @@ try {
 
 ## TypeScript
 
-The SDK is written in TypeScript and ships with type definitions. All request and response types are available when importing from the package.
+The SDK is written in TypeScript and ships with type definitions. All request and response types are available when importing from the shipment.
 
 ---
 

@@ -3,9 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { BranchId } from './BranchId';
+import type { CargoType } from './CargoType';
 import type { CostId } from './CostId';
 import type { Currencies } from './Currencies';
-import type { PackageType } from './PackageType';
 import type { SdkId } from './SdkId';
 import type { ShippingZone } from './ShippingZone';
 import type { Sizes } from './Sizes';
@@ -15,7 +15,7 @@ export type costModelAttributes = {
     tenantId: TenantId;
     branchId: BranchId;
     sdkId: SdkId | null;
-    type: PackageType;
+    type: CargoType;
     typeId: number;
     /**
      * true = V1 (enum size); false = V2 (numeric size/height/width)
@@ -30,15 +30,15 @@ export type costModelAttributes = {
     unit: string;
     currency: Currencies;
     /**
-     * V2: package size (manual number). V1: unused (0).
+     * V2: cargo size (manual number). V1: unused (0).
      */
     maxLong: number;
     /**
-     * V2: package width
+     * V2: cargo width
      */
     maxWidth?: number;
     /**
-     * V2: package height
+     * V2: cargo height
      */
     maxHeight?: number;
     /**

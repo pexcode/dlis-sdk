@@ -4,24 +4,24 @@
 /* eslint-disable */
 import type { BillingType } from './BillingType';
 import type { BranchId } from './BranchId';
+import type { CargoType } from './CargoType';
 import type { ClientAddressAttributes } from './ClientAddressAttributes';
 import type { ClientAttributes } from './ClientAttributes';
 import type { CostId } from './CostId';
 import type { EndpointId } from './EndpointId';
 import type { movementsAttributes } from './movementsAttributes';
-import type { PackageId } from './PackageId';
-import type { PackagePlatform } from './PackagePlatform';
-import type { PackageType } from './PackageType';
 import type { ProofOfDeliveryType } from './ProofOfDeliveryType';
 import type { SdkId } from './SdkId';
+import type { ShipmentId } from './ShipmentId';
+import type { ShipmentPlatform } from './ShipmentPlatform';
 import type { ShippingOption } from './ShippingOption';
 import type { ShippingZone } from './ShippingZone';
 import type { Sizes } from './Sizes';
 import type { TenantId } from './TenantId';
 import type { UserId } from './UserId';
-export type packagesAttributes = {
+export type shipmentsAttributes = {
     url?: string;
-    id: PackageId;
+    id: ShipmentId;
     adminId?: UserId;
     deliveryId?: UserId | null;
     tenantId?: TenantId;
@@ -35,10 +35,17 @@ export type packagesAttributes = {
     branchId?: BranchId;
     receiverId: string;
     senderId: string;
-    type: PackageType;
+    type: CargoType;
     note: string;
     shippingCost: number;
-    packageCost?: number;
+    /**
+     * Cash-on-delivery amount collected from the recipient (goods / COD).
+     */
+    codAmount?: number;
+    /**
+     * Declared contents value for insurance/customs; unused in workflows yet.
+     */
+    declaredValue?: number | null;
     costId?: CostId;
     showCostBox: boolean;
     km?: number;
@@ -62,7 +69,7 @@ export type packagesAttributes = {
     endpointId?: EndpointId;
     pickup: boolean;
     includeProducts: boolean;
-    platform: PackagePlatform;
+    platform: ShipmentPlatform;
     isTesting: boolean;
     scanned?: string;
     stage: number;
@@ -72,7 +79,7 @@ export type packagesAttributes = {
     proofOfDeliveryType?: ProofOfDeliveryType;
     proposedDeliveryDate?: string | null;
     tripId?: string | null;
-    movementPackageGroup?: Array<movementsAttributes>;
+    movementShipmentGroup?: Array<movementsAttributes>;
     receiverInfo?: ClientAttributes;
     senderInfo?: ClientAttributes;
     senderAddressInfo?: ClientAddressAttributes;

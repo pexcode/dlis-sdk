@@ -2,7 +2,4 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export enum PackageType {
-    PACKAGE = 'Package',
-    DOCUMENT = 'Document',
-}
+export type ShipmentId = string;

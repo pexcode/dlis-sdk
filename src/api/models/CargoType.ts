@@ -2,9 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export enum PackagePlatform {
-    DLIS = 'dlis',
-    SDK = 'sdk',
-    ANDROID = 'android',
-    ENDPOINT = 'endpoint',
+export enum CargoType {
+    PACKAGE = 'Package',
+    DOCUMENT = 'Document',
+    TRUCK = 'Truck',
+    CONTAINER = 'Container',
 }

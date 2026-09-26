@@ -4,8 +4,6 @@ import { branchesAttributes } from "./api/models/branchesAttributes";
 import { CalculateCostAttributes } from "./api/models/CalculateCostAttributes";
 import { CheckBlackListAttribute } from "./api/models/CheckBlackListAttribute";
 import { HttpSuccess } from "./api/models/HttpSuccess";
-import { packagesAttributes } from "./api/models/packagesAttributes";
-import { SdkPackagesCreationAttributes } from "./api/models/SdkPackagesCreationAttributes";
 import { SdkInfoAttributes } from "./api/models/SdkInfoAttributes";
 import { ShippingServiceData } from "./api/models/ShippingServiceData";
 import { regionsAttributes } from "./api/models/regionsAttributes";
@@ -14,9 +12,11 @@ import { BranchLedgerAttributes } from "./api/models/BranchLedgerAttributes";
 import { SdkLedgerOverview } from "./api/models/SdkLedgerOverview";
 import { SdkControllerService } from "./api/services/SdkControllerService";
 
-import { SdkPackagesControllerService } from "./api/services/SdkPackagesControllerService";
 import { SdkRegionsControllerService } from "./api/services/SdkRegionsControllerService";
 import { tenantsAttributes } from "./api/models/tenantsAttributes";
+import { SdkShipmentsControllerService } from "./api/services/SdkShipmentsControllerService";
+import { shipmentsAttributes } from "./api/models/shipmentsAttributes";
+import { SdkShipmentsCreationAttributes } from "./api/models/SdkShipmentsCreationAttributes";
 
 const SDK_api_ver = "v3";
 
@@ -27,8 +27,8 @@ export class DLISystem {
     OpenAPI.HEADERS = { 'x-version': SDK_api_ver }
   }
 
-  async GetList(page: number = 1, pageSize: number = 10,): Promise<packagesAttributes[]> {
-    const { result, error } = await ApiCall(() => SdkPackagesControllerService.getList(page, pageSize))
+  async GetList(page: number = 1, pageSize: number = 10,): Promise<shipmentsAttributes[]> {
+    const { result, error } = await ApiCall(() => SdkShipmentsControllerService.getList(page, pageSize))
     if (result) {
       return result;
     }
@@ -68,8 +68,8 @@ export class DLISystem {
   }
 
 
-  async GetPackageDetails(id: string): Promise<packagesAttributes> {
-    const { result, error } = await ApiCall(() => SdkPackagesControllerService.getPackageDetails(id))
+  async GetPackageDetails(id: string): Promise<shipmentsAttributes> {
+    const { result, error } = await ApiCall(() => SdkShipmentsControllerService.getShipmentDetails(id))
     if (result) {
       return result;
     }
@@ -77,7 +77,7 @@ export class DLISystem {
   }
 
   async CheckBlackList(query: CheckBlackListAttribute): Promise<CheckBlackListAttribute> {
-    const { result, error } = await ApiCall(() => SdkPackagesControllerService.checkBlackList(query))
+    const { result, error } = await ApiCall(() => SdkShipmentsControllerService.checkBlackList(query))
     if (result) {
       return result;
     }
@@ -85,7 +85,7 @@ export class DLISystem {
   }
 
   async CancelOne(id: string): Promise<HttpSuccess> {
-    const { result, error } = await ApiCall(() => SdkPackagesControllerService.canceled(id))
+    const { result, error } = await ApiCall(() => SdkShipmentsControllerService.canceled(id))
     if (result) {
       return result;
     }
@@ -93,15 +93,15 @@ export class DLISystem {
   }
 
   async ReportOne(id: string, body: any): Promise<HttpSuccess> {
-    const { result, error } = await ApiCall(() => SdkPackagesControllerService.reportPackage(id, body))
+    const { result, error } = await ApiCall(() => SdkShipmentsControllerService.reportShipment(id, body))
     if (result) {
       return result;
     }
     throw error;
   }
 
-  async CreatePackage(payload: SdkPackagesCreationAttributes[]): Promise<packagesAttributes[]> {
-    const { result, error } = await ApiCall(() => SdkPackagesControllerService.createNewPackage(payload))
+  async CreatePackage(payload: SdkShipmentsCreationAttributes[]): Promise<shipmentsAttributes[]> {
+    const { result, error } = await ApiCall(() => SdkShipmentsControllerService.createNewShipment(payload))
     if (result) {
       return result;
     }
@@ -117,7 +117,7 @@ export class DLISystem {
   }
 
   async SendDataToCenter(id: string[]): Promise<HttpSuccess> {
-    const { result, error } = await ApiCall(() => SdkPackagesControllerService.sendDataToCEnter({packageIds: id}))
+    const { result, error } = await ApiCall(() => SdkShipmentsControllerService.sendDataToCEnter({shipmentIds: id}))
     if (result) {
       return result;
     }

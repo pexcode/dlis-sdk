@@ -2,11 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { PackageId } from './PackageId';
-export type packagesGroupAttributes = {
+import type { ShipmentId } from './ShipmentId';
+export type shipmentsGroupAttributes = {
     movementId: string;
     tripId: string;
-    packageId: PackageId;
+    shipmentId: ShipmentId;
     createdAt?: string;
     updatedAt?: string;
 };

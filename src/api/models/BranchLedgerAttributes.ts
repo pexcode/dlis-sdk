@@ -17,7 +17,7 @@ export type BranchLedgerAttributes = {
     appId?: string;
     limitedSdkId?: string;
     referenceType: ReferenceType;
-    packageId?: string;
+    shipmentId?: string;
     type: LedgerType;
     category: LedgerCategory;
     amount: number;
