@@ -75,12 +75,11 @@ const regions = await dlis.GetRegionsList(countryId);
 const cities = await dlis.GetCitiesListInByRegion(regions[0].id);
 
 const cityId = cities[0].id;
-const branches = await dlis.getCompanyListOfCity(cityId);
+const branches = await dlis.getCompanyListOfCity();
 const branch = branches[0];
 
 const cost = await dlis.CalculateCost({
   costId: branch.costModel![0].id,
-  branchId: branch.id,
   receiverCityId: cityId,
   receiverAddress: "10 Example Street",
   shippingOption: "standard",
@@ -94,13 +93,12 @@ await dlis.CheckBlackList({
   lastName: "Doe",
 });
 
-const shipments = await dlis.CreatePackage([
+const shipments = await dlis.CreateShipment([
   {
     weight: 2,
     shippingOption: "standard",
     billingType: "prepaid",
     proofOfDeliveryType: "signature",
-    branchId: branch.id,
     costId: branch.costModel![0].id,
     type: "Package",
     note: "Store order",
@@ -118,7 +116,7 @@ const shipments = await dlis.CreatePackage([
   },
 ]);
 
-await dlis.SendDataToCenter(shipments.map((pkg) => pkg.id));
+await dlis.SendDataToCenter(shipments.map((shipment) => shipment.id));
 ```
 
 ---
@@ -132,13 +130,13 @@ await dlis.SendDataToCenter(shipments.map((pkg) => pkg.id));
 | `MyInfo()` | Returns connected SDK app info (status, limits, webhook, etc.) |
 | `GetMyTenantInfo()` | Returns the connected tenant details |
 | `getTenantBranches()` | Fetches all tenant branches |
-| `getCompanyListOfCity(cityId)` | Fetches company branches available in a given city |
+| `getCompanyListOfCity()` | Fetches available company branches |
 
 ```typescript
 const info = await dlis.MyInfo();
 const tenant = await dlis.GetMyTenantInfo();
 const branches = await dlis.getTenantBranches();
-const cityBranches = await dlis.getCompanyListOfCity(42);
+const cityBranches = await dlis.getCompanyListOfCity();
 ```
 
 ---
@@ -157,21 +155,21 @@ const cities = await dlis.GetCitiesListInByRegion(regions[0].id);
 
 ---
 
-### Packages
+### Shipments
 
 | Method | Description |
 |--------|-------------|
 | `GetList(page?, pageSize?)` | Fetches paginated shipment list (default: page 1, 10 items) |
-| `GetPackageDetails(id)` | Fetches a single shipment by ID |
-| `CreatePackage(payload)` | Creates one or more shipments (accepts an array) |
+| `GetShipmentDetails(id)` | Fetches a single shipment by ID |
+| `CreateShipment(payload)` | Creates one or more shipments (accepts an array) |
 | `CancelOne(id)` | Cancels a shipment |
 | `ReportOne(id, body)` | Reports an issue with a shipment (`{ reportId: number }`) |
 | `SendDataToCenter(ids)` | Sends shipment data to the center after preparation (accepts an array of IDs) |
 
 ```typescript
 const shipments = await dlis.GetList(1, 20);
-const details = await dlis.GetPackageDetails("shipment-id");
-const created = await dlis.CreatePackage([/* ... */]);
+const details = await dlis.GetShipmentDetails("shipment-id");
+const created = await dlis.CreateShipment([/* ... */]);
 await dlis.CancelOne("shipment-id");
 await dlis.ReportOne("shipment-id", { reportId: 1 });
 await dlis.SendDataToCenter(["shipment-id"]);
@@ -189,7 +187,6 @@ await dlis.SendDataToCenter(["shipment-id"]);
 ```typescript
 const cost = await dlis.CalculateCost({
   costId: "cost-id",
-  branchId: "branch-id",
   receiverCityId: 42,
   receiverAddress: "10 Example Street",
   receiverLat: 24.7136,
@@ -219,7 +216,7 @@ const overview = await dlis.GetMyLedgerOverview();
 // overview.currentBalance, overview.unpaidIncome, overview.unpaidExpenses, overview.expectedBalance
 
 const ledger = await dlis.GetMyLedger(2026, 7);
-// ledger entries include paymentMethod, paymentId, paymentDate, isPaidOnline, limitedSdkId
+// ledger entries include paymentMethod, paymentId, paymentDate, isPaidOnline, limitedSdkId, shipmentId
 ```
 
 ---
@@ -242,26 +239,26 @@ await dlis.SetWebhook({
 
 ## Main Data Types
 
-### Create shipment — `SdkPackagesCreationAttributes`
+### Create Shipment — `SdkShipmentsCreationAttributes`
 
-`CreatePackage` accepts an **array** of these objects.
+`CreateShipment` accepts an **array** of these objects.
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `weight` | `number` | Yes | shipment weight in kilograms |
+| `weight` | `number` | Yes | Shipment weight in kilograms |
 | `shippingOption` | `ShippingOption` | Yes | Shipping type |
 | `billingType` | `BillingType` | Yes | Billing type |
 | `proofOfDeliveryType` | `ProofOfDeliveryType` | Yes | Proof of delivery |
-| `branchId` | `string` | Yes | Branch ID |
 | `costId` | `string` | Yes | Cost model ID |
-| `type` | `PackageType` | Yes | shipment type |
+| `type` | `CargoType` | Yes | Cargo type |
 | `note` | `string` | Yes | Notes |
 | `pickup` | `boolean` | Yes | Pickup from branch? |
 | `includeProducts` | `boolean` | Yes | Includes products? |
 | `isTesting` | `boolean` | Yes | Test shipment |
 | `receiverInfo` | `ClientCreationAttributes` | Yes | Receiver details |
 | `futureTenantId` | `string` | No | Future tenant ID |
-| `codAmount` | `number` | No | shipment contents value |
+| `codAmount` | `number` | No | Cash-on-delivery amount collected from the recipient |
+| `declaredValue` | `number \| null` | No | Declared contents value for insurance/customs |
 | `endpointId` | `string` | No | Specific delivery endpoint ID |
 
 ### Receiver Info — `ClientCreationAttributes`
@@ -351,14 +348,16 @@ Returned by `GetMyLedger()`.
 | `signature` | Receiver signature |
 | `otp` | One-time password (OTP) |
 
-### `PackageType`
+### `CargoType`
 
 | Value | Description |
 |-------|-------------|
 | `Package` | Package |
 | `Document` | Document |
+| `Truck` | Truck |
+| `Container` | Container |
 
-### `PackagePlatform`
+### `ShipmentPlatform`
 
 | Value | Description |
 |-------|-------------|
@@ -381,7 +380,7 @@ When a request fails, the SDK throws an `Error` with the server message. Handle 
 
 ```typescript
 try {
-  const shipments = await dlis.CreatePackage([payload]);
+  const shipments = await dlis.CreateShipment([payload]);
 } catch (error) {
   console.error("Failed to create shipment:", (error as Error).message);
 }
@@ -391,7 +390,7 @@ try {
 
 ## TypeScript
 
-The SDK is written in TypeScript and ships with type definitions. All request and response types are available when importing from the shipment.
+The SDK is written in TypeScript and ships with type definitions. All request and response types are available when importing from the package.
 
 ---
 
