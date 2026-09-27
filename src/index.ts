@@ -68,7 +68,7 @@ export class DLISystem {
   }
 
 
-  async GetPackageDetails(id: string): Promise<shipmentsAttributes> {
+  async GetShipmentDetails(id: string): Promise<shipmentsAttributes> {
     const { result, error } = await ApiCall(() => SdkShipmentsControllerService.getShipmentDetails(id))
     if (result) {
       return result;
@@ -100,7 +100,7 @@ export class DLISystem {
     throw error;
   }
 
-  async CreatePackage(payload: SdkShipmentsCreationAttributes[]): Promise<shipmentsAttributes[]> {
+  async CreateShipment(payload: SdkShipmentsCreationAttributes[]): Promise<shipmentsAttributes[]> {
     const { result, error } = await ApiCall(() => SdkShipmentsControllerService.createNewShipment(payload))
     if (result) {
       return result;
