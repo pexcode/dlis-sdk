@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { AppLevel } from './AppLevel';
+import type { BranchId } from './BranchId';
 import type { ClientAttributes } from './ClientAttributes';
 import type { limitedSdkAttributes } from './limitedSdkAttributes';
 import type { SdkId } from './SdkId';
@@ -11,6 +12,7 @@ export type SdkInfoAttributes = {
     id: SdkId;
     tenantId: TenantId;
     clientId: string;
+    branchId: BranchId;
     countryId: number;
     isActive: boolean;
     currentRequestCount: number;
@@ -24,7 +26,8 @@ export type SdkInfoAttributes = {
     blockedAt?: string;
     createdAt?: string;
     updatedAt?: string;
-    limitedApp?: limitedSdkAttributes;
+    limitedSdk?: Array<limitedSdkAttributes>;
     clientInfo?: ClientAttributes;
+    limitedApp?: limitedSdkAttributes;
 };
 

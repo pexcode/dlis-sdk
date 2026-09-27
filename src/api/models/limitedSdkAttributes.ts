@@ -5,9 +5,9 @@
 import type { SdkId } from './SdkId';
 export type limitedSdkAttributes = {
     id: string;
-    appId: SdkId;
-    maxPackagesCreation: number;
-    currentPackagesCreation: number;
+    sdkId: SdkId;
+    maxShipmentsCreation: number;
+    currentShipmentsCreation: number;
     isActive: boolean;
     expireDate: string;
     createdAt: string;

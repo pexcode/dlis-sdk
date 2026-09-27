@@ -4,7 +4,7 @@
 /* eslint-disable */
 import type { BranchId } from './BranchId';
 import type { MovementsStatusAttributes } from './MovementsStatusAttributes';
-import type { packagesGroupAttributes } from './packagesGroupAttributes';
+import type { shipmentsGroupAttributes } from './shipmentsGroupAttributes';
 import type { TenantId } from './TenantId';
 import type { UserId } from './UserId';
 export type movementsAttributes = {
@@ -18,7 +18,7 @@ export type movementsAttributes = {
     status: MovementsStatusAttributes;
     createdAt?: string;
     updatedAt?: string;
-    packagesCount?: number;
-    packagesGroup?: packagesGroupAttributes;
+    shipmentsCount?: number;
+    shipmentsGroup?: shipmentsGroupAttributes;
 };
 

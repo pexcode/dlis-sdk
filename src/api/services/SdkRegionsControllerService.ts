@@ -10,7 +10,7 @@ import { request as __request } from '../core/request';
 export class SdkRegionsControllerService {
     /**
      * @param regionId
-     * @returns any Ok
+     * @returns citiesAttributes Ok
      * @throws ApiError
      */
     public static getCities(
@@ -26,7 +26,7 @@ export class SdkRegionsControllerService {
     }
     /**
      * @param countryId
-     * @returns any Ok
+     * @returns regionsAttributes Ok
      * @throws ApiError
      */
     public static getRegions(

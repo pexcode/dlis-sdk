@@ -2,9 +2,4 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export enum PackagePlatform {
-    QDS = 'QDS',
-    SDK = 'sdk',
-    ANDROID = 'android',
-    ENDPOINT = 'endpoint',
-}
+export type ShipmentId = string;

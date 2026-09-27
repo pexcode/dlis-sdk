@@ -2,7 +2,7 @@
 
 Official TypeScript/JavaScript SDK from [Pexcode](https://pexcode.com) for integrating with the **DLIS API** (delivery and logistics management platform).
 
-The SDK supports package creation, cost calculation, branch and region management, ledger tracking, and webhook configuration.
+The SDK supports shipment creation, cost calculation, branch and region management, ledger tracking, and webhook configuration.
 
 ---
 
@@ -53,7 +53,7 @@ const dlis = new QDSystem("https://your-api-base-url.com", "your-api-token");
 
 ## Typical Workflow
 
-Common steps to create a new package:
+Common steps to create a new shipment:
 
 ```
 1. Fetch regions
@@ -61,8 +61,8 @@ Common steps to create a new package:
 3. Fetch company branches in the city
 4. Calculate shipping cost
 5. Check blacklist (optional)
-6. Create the package
-7. Send package data to the center
+6. Create the shipment(s)
+7. Send shipment data to the center
 ```
 
 ```typescript
@@ -75,12 +75,11 @@ const regions = await dlis.GetRegionsList(countryId);
 const cities = await dlis.GetCitiesListInByRegion(regions[0].id);
 
 const cityId = cities[0].id;
-const branches = await dlis.getCompanyListOfCity(cityId);
+const branches = await dlis.getCompanyListOfCity();
 const branch = branches[0];
 
 const cost = await dlis.CalculateCost({
   costId: branch.costModel![0].id,
-  branchId: branch.id,
   receiverCityId: cityId,
   receiverAddress: "10 Example Street",
   shippingOption: "standard",
@@ -94,28 +93,30 @@ await dlis.CheckBlackList({
   lastName: "Doe",
 });
 
-const pkg = await dlis.CreatePackage({
-  weight: 2,
-  shippingOption: "standard",
-  billingType: "prepaid",
-  proofOfDeliveryType: "signature",
-  branchId: branch.id,
-  costId: branch.costModel![0].id,
-  type: "Package",
-  note: "Store order",
-  pickup: false,
-  includeProducts: false,
-  isTesting: false,
-  receiverInfo: {
-    firstName: "John",
-    lastName: "Doe",
-    address: "10 Example Street",
-    phone: "+966500000000",
-    cityId,
+const shipments = await dlis.CreateShipment([
+  {
+    weight: 2,
+    shippingOption: "standard",
+    billingType: "prepaid",
+    proofOfDeliveryType: "signature",
+    costId: branch.costModel![0].id,
+    type: "Package",
+    note: "Store order",
+    pickup: false,
+    includeProducts: false,
+    isTesting: false,
+    receiverInfo: {
+      firstName: "John",
+      lastName: "Doe",
+      address: "10 Example Street",
+      phone: "+966500000000",
+      cityId,
+      neighborhoodId: 5,
+    },
   },
-});
+]);
 
-await dlis.SendDataToCenter(pkg.id);
+await dlis.SendDataToCenter(shipments.map((shipment) => shipment.id));
 ```
 
 ---
@@ -127,13 +128,15 @@ await dlis.SendDataToCenter(pkg.id);
 | Method | Description |
 |--------|-------------|
 | `MyInfo()` | Returns connected SDK app info (status, limits, webhook, etc.) |
+| `GetMyTenantInfo()` | Returns the connected tenant details |
 | `getTenantBranches()` | Fetches all tenant branches |
-| `getCompanyListOfCity(cityId)` | Fetches company branches available in a given city |
+| `getCompanyListOfCity()` | Fetches available company branches |
 
 ```typescript
 const info = await dlis.MyInfo();
+const tenant = await dlis.GetMyTenantInfo();
 const branches = await dlis.getTenantBranches();
-const cityBranches = await dlis.getCompanyListOfCity(42);
+const cityBranches = await dlis.getCompanyListOfCity();
 ```
 
 ---
@@ -152,24 +155,24 @@ const cities = await dlis.GetCitiesListInByRegion(regions[0].id);
 
 ---
 
-### Packages
+### Shipments
 
 | Method | Description |
 |--------|-------------|
-| `GetList(page?, pageSize?)` | Fetches paginated package list (default: page 1, 10 items) |
-| `GetPackageDetails(id)` | Fetches a single package by ID |
-| `CreatePackage(payload)` | Creates a new package |
-| `CancelOne(id)` | Cancels a package |
-| `ReportOne(id, body)` | Reports an issue with a package |
-| `SendDataToCenter(id)` | Sends package data to the center after preparation |
+| `GetList(page?, pageSize?)` | Fetches paginated shipment list (default: page 1, 10 items) |
+| `GetShipmentDetails(id)` | Fetches a single shipment by ID |
+| `CreateShipment(payload)` | Creates one or more shipments (accepts an array) |
+| `CancelOne(id)` | Cancels a shipment |
+| `ReportOne(id, body)` | Reports an issue with a shipment (`{ reportId: number }`) |
+| `SendDataToCenter(ids)` | Sends shipment data to the center after preparation (accepts an array of IDs) |
 
 ```typescript
-const packages = await dlis.GetList(1, 20);
-const details = await dlis.GetPackageDetails("package-id");
-const created = await dlis.CreatePackage({ /* ... */ });
-await dlis.CancelOne("package-id");
-await dlis.ReportOne("package-id", { reason: "Delivery delayed" });
-await dlis.SendDataToCenter("package-id");
+const shipments = await dlis.GetList(1, 20);
+const details = await dlis.GetShipmentDetails("shipment-id");
+const created = await dlis.CreateShipment([/* ... */]);
+await dlis.CancelOne("shipment-id");
+await dlis.ReportOne("shipment-id", { reportId: 1 });
+await dlis.SendDataToCenter(["shipment-id"]);
 ```
 
 ---
@@ -178,13 +181,12 @@ await dlis.SendDataToCenter("package-id");
 
 | Method | Description |
 |--------|-------------|
-| `CalculateCost(params)` | Calculates shipping cost before creating a package |
+| `CalculateCost(params)` | Calculates shipping cost before creating a shipment |
 | `CheckBlackList(query)` | Checks receiver details against the blacklist |
 
 ```typescript
 const cost = await dlis.CalculateCost({
   costId: "cost-id",
-  branchId: "branch-id",
   receiverCityId: 42,
   receiverAddress: "10 Example Street",
   receiverLat: 24.7136,
@@ -214,6 +216,7 @@ const overview = await dlis.GetMyLedgerOverview();
 // overview.currentBalance, overview.unpaidIncome, overview.unpaidExpenses, overview.expectedBalance
 
 const ledger = await dlis.GetMyLedger(2026, 7);
+// ledger entries include paymentMethod, paymentId, paymentDate, isPaidOnline, limitedSdkId, shipmentId
 ```
 
 ---
@@ -236,27 +239,31 @@ await dlis.SetWebhook({
 
 ## Main Data Types
 
-### Create Package — `SdkPackagesCreationAttributes`
+### Create Shipment — `SdkShipmentsCreationAttributes`
+
+`CreateShipment` accepts an **array** of these objects.
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `weight` | `number` | Yes | Package weight in kilograms |
+| `weight` | `number` | Yes | Shipment weight in kilograms |
 | `shippingOption` | `ShippingOption` | Yes | Shipping type |
 | `billingType` | `BillingType` | Yes | Billing type |
 | `proofOfDeliveryType` | `ProofOfDeliveryType` | Yes | Proof of delivery |
-| `branchId` | `string` | Yes | Branch ID |
 | `costId` | `string` | Yes | Cost model ID |
-| `type` | `PackageType` | Yes | Package type |
+| `type` | `CargoType` | Yes | Cargo type |
 | `note` | `string` | Yes | Notes |
 | `pickup` | `boolean` | Yes | Pickup from branch? |
 | `includeProducts` | `boolean` | Yes | Includes products? |
-| `isTesting` | `boolean` | Yes | Test package |
+| `isTesting` | `boolean` | Yes | Test shipment |
 | `receiverInfo` | `ClientCreationAttributes` | Yes | Receiver details |
 | `futureTenantId` | `string` | No | Future tenant ID |
-| `packageCost` | `number` | No | Package contents value |
-| `endpoint` | `string` | No | Specific delivery endpoint |
+| `codAmount` | `number` | No | Cash-on-delivery amount collected from the recipient |
+| `declaredValue` | `number \| null` | No | Declared contents value for insurance/customs |
+| `endpointId` | `string` | No | Specific delivery endpoint ID |
 
 ### Receiver Info — `ClientCreationAttributes`
+
+Used when creating a shipment (`receiverInfo`).
 
 | Field | Type | Required |
 |-------|------|----------|
@@ -265,10 +272,53 @@ await dlis.SetWebhook({
 | `address` | `string` | Yes |
 | `phone` | `string` | Yes |
 | `cityId` | `number` | Yes |
+| `neighborhoodId` | `number` | No |
 | `postCode` | `string` | No |
 | `email` | `string` | No |
 | `lng` / `lat` | `number` | No |
 | `houseNumber` | `string` | No |
+
+### Address Info — `ClientAddressAttributes`
+
+Returned on shipment details as `senderAddressInfo` and `receiverAddressInfo`, and on client details as `defaultAddress` / `addresses`.
+
+| Field | Type | Required |
+|-------|------|----------|
+| `id` | `string` | Yes |
+| `clientId` | `string` | Yes |
+| `countryId` | `number` | Yes |
+| `cityId` | `number` | Yes |
+| `address` | `string` | Yes |
+| `isDefault` | `boolean` | Yes |
+| `neighborhoodId` | `number \| null` | No |
+| `houseNumber` | `string \| null` | No |
+| `postCode` | `string \| null` | No |
+| `lat` / `lng` | `number \| null` | No |
+| `createdAt` / `updatedAt` | `string` | No |
+
+### Ledger Entry — `BranchLedgerAttributes`
+
+Returned by `GetMyLedger()`.
+
+| Field | Type | Required |
+|-------|------|----------|
+| `id` | `string` | Yes |
+| `branchId` | `string` | Yes |
+| `referenceType` | `ReferenceType` | Yes |
+| `type` | `LedgerType` | Yes |
+| `category` | `LedgerCategory` | Yes |
+| `amount` | `number` | Yes |
+| `currency` | `Currencies` | Yes |
+| `status` | `LedgerStatus` | Yes |
+| `userId` | `string` | No |
+| `appId` | `string` | No |
+| `limitedSdkId` | `string` | No |
+| `shipmentId` | `string` | No |
+| `paymentMethod` | `PaymentMethod` | No |
+| `paymentId` | `string` | No |
+| `paymentDate` | `string` | No |
+| `isPaidOnline` | `boolean` | No |
+| `createdAt` / `updatedAt` | `string` | No |
 
 ---
 
@@ -298,12 +348,29 @@ await dlis.SetWebhook({
 | `signature` | Receiver signature |
 | `otp` | One-time password (OTP) |
 
-### `PackageType`
+### `CargoType`
 
 | Value | Description |
 |-------|-------------|
 | `Package` | Package |
 | `Document` | Document |
+| `Truck` | Truck |
+| `Container` | Container |
+
+### `ShipmentPlatform`
+
+| Value | Description |
+|-------|-------------|
+| `dlis` | DLIS platform |
+| `sdk` | SDK |
+| `android` | Android app |
+| `endpoint` | Endpoint |
+
+### `PaymentMethod`
+
+| Value | Description |
+|-------|-------------|
+| `Cash` | Cash payment |
 
 ---
 
@@ -313,9 +380,9 @@ When a request fails, the SDK throws an `Error` with the server message. Handle 
 
 ```typescript
 try {
-  const pkg = await dlis.CreatePackage(payload);
+  const shipments = await dlis.CreateShipment([payload]);
 } catch (error) {
-  console.error("Failed to create package:", (error as Error).message);
+  console.error("Failed to create shipment:", (error as Error).message);
 }
 ```
 

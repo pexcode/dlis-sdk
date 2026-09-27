@@ -2,4 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type PackageId = string;
+export enum ShipmentPlatform {
+    DLIS = 'dlis',
+    SDK = 'sdk',
+    ANDROID = 'android',
+    ENDPOINT = 'endpoint',
+}
