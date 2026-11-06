@@ -39,16 +39,6 @@ console.log(info);
 
 > **Note:** The SDK automatically uses API version `v3` via the `x-version` header.
 
-### Backward Compatibility
-
-For backward compatibility, you can import the legacy name `QDSystem` instead of `DLISystem`:
-
-```typescript
-import { QDSystem } from "@pexcode/dlis-sdk";
-
-const dlis = new QDSystem("https://your-api-base-url.com", "your-api-token");
-```
-
 ---
 
 ## Typical Workflow
@@ -103,8 +93,16 @@ const shipments = await dlis.CreateShipment([
     type: "Package",
     note: "Store order",
     pickup: false,
-    includeProducts: false,
     isTesting: false,
+    contentsItem: [
+      {
+        title: "Box A",
+        quantity: 2,
+        weight: 1.5,
+        type: "piece",
+        details: "Fragile",
+      },
+    ],
     receiverInfo: {
       firstName: "John",
       lastName: "Doe",
@@ -253,13 +251,26 @@ await dlis.SetWebhook({
 | `type` | `CargoType` | Yes | Cargo type |
 | `note` | `string` | Yes | Notes |
 | `pickup` | `boolean` | Yes | Pickup from branch? |
-| `includeProducts` | `boolean` | Yes | Includes products? |
 | `isTesting` | `boolean` | Yes | Test shipment |
 | `receiverInfo` | `ClientCreationAttributes` | Yes | Receiver details |
 | `futureTenantId` | `string` | No | Future tenant ID |
 | `codAmount` | `number` | No | Cash-on-delivery amount collected from the recipient |
 | `declaredValue` | `number \| null` | No | Declared contents value for insurance/customs |
 | `endpointId` | `string` | No | Specific delivery endpoint ID |
+| `contentsItem` | `ShipmentChildItem[] \| null` | No | Nested content line items; omitted/empty persists as null |
+
+### Child Item — `ShipmentChildItem`
+
+Optional line items on create (`contentsItem`). Operator UI usually omits `id`; SDK callers may send an external reference.
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `title` | `string` | Yes | Item title |
+| `quantity` | `number` | Yes | Quantity (must be > 0) |
+| `weight` | `number` | Yes | Item weight (must be ≥ 0) |
+| `id` | `string \| number` | No | External reference id; omit when unused |
+| `type` | `string` | No | Free-text item type |
+| `details` | `string` | No | Free-text notes for this line item |
 
 ### Receiver Info — `ClientCreationAttributes`
 

@@ -8,6 +8,7 @@ import type { ClientCreationAttributes } from './ClientCreationAttributes';
 import type { CostId } from './CostId';
 import type { EndpointId } from './EndpointId';
 import type { ProofOfDeliveryType } from './ProofOfDeliveryType';
+import type { ShipmentChildItem } from './ShipmentChildItem';
 import type { ShippingOption } from './ShippingOption';
 import type { TenantId } from './TenantId';
 export type SdkShipmentsCreationAttributes = {
@@ -29,8 +30,8 @@ export type SdkShipmentsCreationAttributes = {
     declaredValue?: number | null;
     endpointId?: EndpointId;
     pickup: boolean;
-    includeProducts: boolean;
     isTesting: boolean;
+    contentsItem?: Array<ShipmentChildItem> | null;
     receiverInfo: ClientCreationAttributes;
 };
 

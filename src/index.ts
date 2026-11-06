@@ -168,5 +168,3 @@ export class DLISystem {
     throw error;
   }
 }
-
-export { DLISystem as QDSystem };
